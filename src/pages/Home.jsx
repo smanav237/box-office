@@ -31,7 +31,7 @@ const Home = () => {
         value={input}
       />
       <button type="button" onClick={onSearch}>
-        Search
+        Sr
       </button>
     </HeadLayout>
   );
