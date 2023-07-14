@@ -1,18 +1,17 @@
-import Title from './Title'
-import Navs from './Navs'
+import { Outlet } from 'react-router-dom';
+import Title from './Title';
+import Navs from './Navs';
 
-const HeadLayout = ({children}) => {
+
+const HeadLayout = () => {
   return (
     <div>
-    <Title
-      title="Box Office"
-      subtitle="Are you looking for a movie or an actor?"
-    />
-    <Navs />
+      <Title />
+      <Navs />
 
-    {children}
-  </div>
-  )
-}
+      <Outlet />
+    </div>
+  );
+};
 
-export default HeadLayout
+export default HeadLayout;
