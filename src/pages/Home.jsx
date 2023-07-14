@@ -1,40 +1,53 @@
-import React, { useState } from 'react';
-import HeadLayout from '../components/HeadLayout';
+import { useState } from "react";
+import {SearchForShows, SearchForPeople} from '../api/tvmaze';
+import SearchForm from '../components/SearchForm'
 
-const Home = () => {
-  const [input, setInput] = useState('');
+const Home = () =>{
+  const [apiData, setApiData] = useState(null);
+  const [apiDataError, setApiDataError] = useState(null);
 
-  const onSearch = () => {
-    fetch(`https://api.tvmaze.com/search/shows?q=${input}`)
-      .then(r => r.json())
-      .then(result => {
-        console.log(result);
-      });
-  };
+  const onSearch = async ({q,searchOption}) = {
+    try {
+      setApiDataError(null);
+      let result;
+      
+      if(searchOption === 'shows'){
+        result = await searchForShows(q);
+      }
+      else{
+        result = await SearchForPeople(q);
+      }
 
-  const onInputChange = ev => {
-    setInput(ev.target.value);
-  };
-
-  const onKeyDown = ev => {
-    if (ev.keyCode === 13) {
-      onSearch();
+    } catch (error) {
+      setApiDataError(error)
     }
-  };
+  }
 
-  return (
-    <HeadLayout>
-      <input
-        type="text"
-        onChange={onInputChange}
-        onKeyDown={onKeyDown}
-        value={input}
-      />
-      <button type="button" onClick={onSearch}>
-        Sr
-      </button>
-    </HeadLayout>
-  );
+
+const renderApiData = () => {
+  if(apiDataError)
+  {
+      return <div>Error occured: {apiDataError.message}</div>
+  }
+
+  if(apiData)
+  {
+    return apiData[0].show
+    ? apiData.map(data => <div key={data.show.id}>{data.show.name}</div>)
+    : apiData.map(data => (<div key={data.person.id}>{data.person.name}</div>))
+  }
+  return null        // else
+
 };
+  
 
-export default Home;
+  return(
+    <div>
+      <SearchForm onSearch={onSearch}/>
+      <div>{renderApiData()}</div>
+    </div>
+  )
+
+}
+
+export default Home
